@@ -1,0 +1,16 @@
+[
+{
+  "modid": "blackwellplugins",
+  "name": "Blackwell University Plugins",
+  "description": "Plugins du serveur Blackwell University",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Joe l'chasseu d'cochon"],
+  "credits": "Alex, Blackwell University",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
