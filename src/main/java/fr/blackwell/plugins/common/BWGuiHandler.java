@@ -1,5 +1,7 @@
 package fr.blackwell.plugins.common;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import fr.blackwell.plugins.tablist.TabGui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -22,6 +24,10 @@ public class BWGuiHandler implements IGuiHandler {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 
+
+
+        if (ID == TAB_PLAYER_LIST)
+            return new TabGui (player);
         return null;
     }
 }

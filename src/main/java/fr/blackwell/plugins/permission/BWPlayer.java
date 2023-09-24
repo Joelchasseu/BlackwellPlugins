@@ -16,17 +16,26 @@ public class BWPlayer {
     private String firstName;
     private String lastName;
     private String username;
+    private int age;
     private boolean isStaff = false;
     private boolean isVanished = false;
+    private String role;
+    private String type;
 
     public BWPlayer(String username, JsonObject profile) {
 
         this.group = profile.get("group").getAsJsonArray();
         this.profile = profile;
-        this.initializePermList();
+
         this.username = username;
         this.firstName = profile.get("firstname").getAsString();
         this.lastName = profile.get("lastname").getAsString();
+        this.age = profile.get("age").getAsInt();
+        this.role = profile.get("role").getAsString();
+        this.type = profile.get("type").getAsString();
+        if (profile.has("staff"))
+            this.isStaff = profile.get("staff").getAsBoolean();
+        this.initializePermList();
     }
 
     public JsonArray getGroup() {
@@ -76,13 +85,31 @@ public class BWPlayer {
         return this.lastName;
     }
 
-    public String getRoleplayName(){ return this.firstName + " " + this.lastName;}
+    public String getRole() {
+        return this.role;
+    }
+
+    public String getMagicType() {
+        return this.type;
+    }
+
+    public int getAge() {
+        return this.age;
+    }
+
+    public String getRoleplayName() {
+        return this.firstName + " " + this.lastName;
+    }
 
     public boolean isStaff() {
         return this.isStaff;
     }
+
     public boolean isVanished() {
         return this.isVanished;
     }
-    public void setVanished(boolean bool){ this.isVanished = bool;}
+
+    public void setVanished(boolean bool) {
+        this.isVanished = bool;
+    }
 }

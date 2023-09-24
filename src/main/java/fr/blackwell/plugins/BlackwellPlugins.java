@@ -1,15 +1,18 @@
 package fr.blackwell.plugins;
 
 import fr.blackwell.plugins.chat.ChatProcessing;
+import fr.blackwell.plugins.chatindicator.ChatEvent;
 import fr.blackwell.plugins.command.*;
 import fr.blackwell.plugins.common.BWGuiHandler;
 import fr.blackwell.plugins.events.EventsPerm;
-import fr.blackwell.plugins.tablist.GuiEvent;
 import fr.blackwell.plugins.permission.BWPermissionHandler;
 import fr.blackwell.plugins.permission.BWPermissionManagement;
 import fr.blackwell.plugins.permission.BWPlayerProfileManagement;
+import fr.blackwell.plugins.tablist.*;
 import fr.blackwell.plugins.utils.BWJSONUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -17,6 +20,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +38,7 @@ public class BlackwellPlugins
     public static final File PLAYERS_FILE = new File("config/blackwell-plugins/players.json");
     public static final File CHAT_CONFIG_FILE = new File("config/blackwell-plugins/chatconfig.json");
     public static final File WARP_FILE = new File("config/blackwell-plugins/warp.json");
+    public static final File TIME_FILE = new File("config/blackwell-plugins/time.json");
 
     public static BWPermissionHandler permManager = new BWPermissionHandler();
 
@@ -53,8 +60,10 @@ public class BlackwellPlugins
         MinecraftForge.EVENT_BUS.register(EventsPerm.class);
         MinecraftForge.EVENT_BUS.register(ChatProcessing.class);
         MinecraftForge.EVENT_BUS.register(GuiEvent.class);
+        MinecraftForge.EVENT_BUS.register(ChatEvent.class);
         NetworkRegistry.INSTANCE.registerGuiHandler(BlackwellPlugins.instance, new BWGuiHandler());
 
+        BWPacketHandler.registerMessages();
     }
 
     @EventHandler
@@ -68,6 +77,7 @@ public class BlackwellPlugins
         event.registerServerCommand(new CommandRoll());
         event.registerServerCommand(new CommandNear());
         event.registerServerCommand(new CommandVanish());
+        event.registerServerCommand(new CommandEditProfile());
         BWPermissionManagement.loadPerm();
 
         ChatProcessing.loadChatCanals();
@@ -81,6 +91,7 @@ public class BlackwellPlugins
         BWJSONUtils.createNewJson(PERM_FILE);
         BWPlayerProfileManagement.createPlayersJSON(PLAYERS_FILE);
         BWJSONUtils.createNewJson(WARP_FILE);
+        TimeManagement.InitiateTime();
         ChatProcessing.createChatConfigFile();
     }
 }

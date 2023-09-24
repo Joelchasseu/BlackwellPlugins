@@ -39,7 +39,6 @@ public class InvSeeListener implements IInventoryChangedListener {
                 invToSave.appendTag(nbtStack);
             }
         }
-
         compound.setTag("Inventory", invToSave);
         try {
             CompressedStreamTools.writeCompressed(compound, new FileOutputStream(playerData));

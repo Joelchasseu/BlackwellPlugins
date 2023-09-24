@@ -50,8 +50,8 @@ public class CommandJoin implements ICommand {
                 JsonObject coord = profile.get("lastPos").getAsJsonObject();
                 player.setPositionAndUpdate(coord.get("x").getAsInt(),coord.get("y").getAsInt(),coord.get("z").getAsInt());
                 sender.sendMessage(new TextComponentString("Retour à votre dernière position, bon jeu à vous !"));
-            } sender.sendMessage(new TextComponentString("Dernière position introuvable, veuillez contacter un membre du staff").setStyle(new Style().setColor(TextFormatting.RED)));
-        } BlackwellPlugins.logger.warn("Seul les joueurs peuvent utiliser la commande /join");
+            } else sender.sendMessage(new TextComponentString("Dernière position introuvable, veuillez contacter un membre du staff").setStyle(new Style().setColor(TextFormatting.RED)));
+        }  else BlackwellPlugins.logger.warn("Seul les joueurs peuvent utiliser la commande /join");
     }
 
     @Override

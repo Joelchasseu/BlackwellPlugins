@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.blackwell.plugins.BlackwellPlugins;
 import fr.blackwell.plugins.utils.BWJSONUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -63,6 +65,7 @@ public class BWPlayerProfileManagement {
 
         permArray.add(defaultGroup);
         profile.add("group", permArray);
+        profile.addProperty("username", username);
 
         JsonObject index = BWJSONUtils.getJsonRootObject(BlackwellPlugins.PLAYERS_FILE);
         index.add(username, profile);
@@ -105,8 +108,15 @@ public class BWPlayerProfileManagement {
         PLAYER_MAP.put(username, new BWPlayer(username, getPlayerProfileFromFile(username)));
     }
 
+    @SideOnly(Side.CLIENT)
+    public static void loadPlayerDataToClient(JsonObject profile, String username) {
+        PLAYER_MAP.put(username, new BWPlayer(username, profile));
+    }
+
+
     public static void savePlayerData(String username) {
         JsonObject profile = PLAYER_MAP.get(username).getProfile();
+        profile.addProperty("staff", PLAYER_MAP.get(username).isStaff());
         PLAYER_MAP.remove(username);
 
         JsonObject index = BWJSONUtils.getJsonRootObject(BlackwellPlugins.PLAYERS_FILE);

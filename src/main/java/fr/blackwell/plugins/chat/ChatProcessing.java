@@ -33,8 +33,13 @@ public class ChatProcessing {
     public static void onChatProcessing(ServerChatEvent event) {
 
         event.setCanceled(true);
+
+
+
         EntityPlayerMP sender = event.getPlayer();
         String message = event.getMessage();
+        String username = sender.getName();
+
 
         String prefix;
         ChatCanal canal = null;
@@ -50,10 +55,9 @@ public class ChatProcessing {
         if (canal == null)
             canal = CHAT_CANAL_PREFIX.get("default");
 
-        List<EntityPlayerMP> playersInRange = new ArrayList<>();
         List<EntityPlayerMP> onlinePlayerNames = FMLServerHandler.instance().getServer().getPlayerList().getPlayers();
 
-        String name = BWPlayerProfileManagement.PLAYER_MAP.get(sender.getName()).getFirstName() + " " + BWPlayerProfileManagement.PLAYER_MAP.get(sender.getName()).getLastName();
+        String name = BWPlayerProfileManagement.PLAYER_MAP.get(username).getFirstName() + " " + BWPlayerProfileManagement.PLAYER_MAP.get(username).getLastName();
         TextComponentString messageToSend;
 
         if (canal.getStructureType().equals("emote"))
@@ -77,7 +81,7 @@ public class ChatProcessing {
                     onlinePlayerNames.get(i).sendMessage(messageToSend);
 
             } else if (canal.getStructureType().equals("staff") && !canal.getName().equals("staff")) {
-                if (!BWPlayerProfileManagement.PLAYER_MAP.get(sender.getName()).isStaff() && feedback == false) {
+                if (!BWPlayerProfileManagement.PLAYER_MAP.get(username).isStaff() && !feedback) {
                     sender.sendMessage(messageToSend);
                     feedback = true;
                 }
@@ -90,7 +94,7 @@ public class ChatProcessing {
 
             } else if (canal.getStructureType().equals("staff") && canal.getName().equals("staff")) {
 
-                if (BWPlayerProfileManagement.PLAYER_MAP.get(sender.getName()).isStaff()) {
+                if (BWPlayerProfileManagement.PLAYER_MAP.get(username).isStaff()) {
                     player = BWPlayerProfileManagement.PLAYER_MAP.get(onlinePlayerNames.get(i).getName());
                     if (player.isStaff())
                         onlinePlayerNames.get(i).sendMessage(messageToSend);
@@ -99,7 +103,6 @@ public class ChatProcessing {
 
             } else onlinePlayerNames.get(i).sendMessage(messageToSend);
         }
-        feedback = false;
     }
 
     public static void loadChatCanals() {
