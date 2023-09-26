@@ -32,7 +32,6 @@ public class MessChatCloseAns implements IMessage {
         @Override
         public IMessage onMessage(MessChatCloseAns message, MessageContext ctx) {
 
-            System.out.println("CLOSE");
             ChatEvent.CHATTING_PLAYER_LIST.remove(message.username);
             return null;
         }

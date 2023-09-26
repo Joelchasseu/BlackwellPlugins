@@ -16,8 +16,22 @@ public class BWGuiUtils {
 
     public static final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
 
-    public static void drawCenteredString(String text, int x, int y, int color) {
-        font.drawStringWithShadow(text, x - ((float) font.getStringWidth(text) / 2), y, color);
+    public static void drawString(String text, int x, int y, float scale,int color) {
+        GL11.glPushMatrix();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 6);
+        GL11.glTranslatef(x, y, 2f);
+        GL11.glScalef(scale, scale, 1F);
+        font.drawStringWithShadow(text, 0, 0, color);
+        GL11.glPopMatrix();
+    }
+    public static void drawCenteredString(String text, int x, int y, float scale, int color) {
+        GL11.glPushMatrix();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 6);
+        int stringWidth = Math.round(font.getStringWidth(text) * scale);
+        GL11.glTranslatef(x - stringWidth / 2f, y, 2f);
+        GL11.glScalef(scale, scale, 1F);
+        font.drawStringWithShadow(text, 0, 0, color);
+        GL11.glPopMatrix();
     }
 
     public static void drawCenteredString(String text, float x, float y, int color) {

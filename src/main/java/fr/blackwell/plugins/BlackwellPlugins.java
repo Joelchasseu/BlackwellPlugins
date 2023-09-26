@@ -88,9 +88,9 @@ public class BlackwellPlugins
     @EventHandler
     public void onServerAboutToStart(FMLServerAboutToStartEvent event){
 
-        BWJSONUtils.createNewJson(PERM_FILE);
+        BWJSONUtils.createNewJsonServerSide(PERM_FILE);
         BWPlayerProfileManagement.createPlayersJSON(PLAYERS_FILE);
-        BWJSONUtils.createNewJson(WARP_FILE);
+        BWJSONUtils.createNewJsonServerSide(WARP_FILE);
         TimeManagement.InitiateTime();
         ChatProcessing.createChatConfigFile();
     }

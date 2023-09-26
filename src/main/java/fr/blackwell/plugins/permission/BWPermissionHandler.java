@@ -96,7 +96,7 @@ public class BWPermissionHandler implements IPermissionHandler {
         Set<ICommand> commandSet = new HashSet<>();
         Map<String, ICommand> serverCommandList = cHandler.getCommands();
 
-        BWJSONUtils.createNewJson(new File("config/blackwell-plugins/commandlist.json"));
+        BWJSONUtils.createNewJsonServerSide(new File("config/blackwell-plugins/commandlist.json"));
         JsonObject index = new JsonObject();
         String[] commandArray = serverCommandList.keySet().toArray(new String[0]);
 

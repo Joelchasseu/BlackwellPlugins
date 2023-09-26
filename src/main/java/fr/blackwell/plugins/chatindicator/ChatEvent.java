@@ -29,7 +29,6 @@ public class ChatEvent {
     public static void onPlayersChatOpened(GuiOpenEvent event) {
         if (event.getGui() != null && event.getGui() instanceof GuiChat)
             event.setGui(new ChatGui());
-        System.out.println("test");
     }
 
     @SideOnly(Side.CLIENT)

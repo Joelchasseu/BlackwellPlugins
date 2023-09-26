@@ -25,7 +25,6 @@ public class MessChatClose implements IMessage {
 
         @Override
         public IMessage onMessage(MessChatClose message, MessageContext ctx) {
-            System.out.println(ctx.getServerHandler().player.getName());
             BWPacketHandler.INSTANCE.sendToAll(new MessChatCloseAns(message.username));
 
             return null;

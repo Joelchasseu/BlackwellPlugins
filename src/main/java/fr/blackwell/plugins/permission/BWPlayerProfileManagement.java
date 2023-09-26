@@ -19,7 +19,7 @@ public class BWPlayerProfileManagement {
     public static void createPlayersJSON(File file) {
 
         if (!file.exists()) {
-            BWJSONUtils.createNewJson(file);
+            BWJSONUtils.createNewJsonServerSide(file);
             JsonArray root = new JsonArray();
             JsonObject rootObject = new JsonObject();
             rootObject.add("index", new JsonObject());

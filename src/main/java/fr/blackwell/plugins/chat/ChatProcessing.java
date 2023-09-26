@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
-import javax.management.Descriptor;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +32,6 @@ public class ChatProcessing {
     public static void onChatProcessing(ServerChatEvent event) {
 
         event.setCanceled(true);
-
-
-
         EntityPlayerMP sender = event.getPlayer();
         String message = event.getMessage();
         String username = sender.getName();
@@ -67,18 +63,18 @@ public class ChatProcessing {
         else
             messageToSend = new TextComponentString(name + " : " + message);
 
-        if (!canal.getChatPrefix().equals(""))
+        if (!canal.getChatPrefix().isEmpty())
             messageToSend = new TextComponentString("[" + canal.getChatPrefix() + "] " + messageToSend.getText());
 
         messageToSend.setStyle(canal.getStyle());
 
         BWPlayer player;
         boolean feedback = false;
-        for (int i = 0; i < onlinePlayerNames.size(); i++) {
+        for (EntityPlayerMP onlinePlayerName : onlinePlayerNames) {
 
             if (canal.getRange() != 0 && !canal.getStructureType().equals("staff")) {
-                if (sender.getPosition().distanceSq(onlinePlayerNames.get(i).getPosition()) < canal.getRange() * canal.getRange())
-                    onlinePlayerNames.get(i).sendMessage(messageToSend);
+                if (sender.getPosition().distanceSq(onlinePlayerName.getPosition()) < canal.getRange() * canal.getRange())
+                    onlinePlayerName.sendMessage(messageToSend);
 
             } else if (canal.getStructureType().equals("staff") && !canal.getName().equals("staff")) {
                 if (!BWPlayerProfileManagement.PLAYER_MAP.get(username).isStaff() && !feedback) {
@@ -86,22 +82,22 @@ public class ChatProcessing {
                     feedback = true;
                 }
 
-                player = BWPlayerProfileManagement.PLAYER_MAP.get(onlinePlayerNames.get(i).getName());
+                player = BWPlayerProfileManagement.PLAYER_MAP.get(onlinePlayerName.getName());
 
                 if (player.isStaff()) {
-                    onlinePlayerNames.get(i).sendMessage(messageToSend);
+                    onlinePlayerName.sendMessage(messageToSend);
                 }
 
             } else if (canal.getStructureType().equals("staff") && canal.getName().equals("staff")) {
 
                 if (BWPlayerProfileManagement.PLAYER_MAP.get(username).isStaff()) {
-                    player = BWPlayerProfileManagement.PLAYER_MAP.get(onlinePlayerNames.get(i).getName());
+                    player = BWPlayerProfileManagement.PLAYER_MAP.get(onlinePlayerName.getName());
                     if (player.isStaff())
-                        onlinePlayerNames.get(i).sendMessage(messageToSend);
+                        onlinePlayerName.sendMessage(messageToSend);
                 } else
                     sender.sendMessage(new TextComponentString("Vous n'avez pas la permission d'utiliser ce canal").setStyle(new Style().setColor(TextFormatting.RED)));
 
-            } else onlinePlayerNames.get(i).sendMessage(messageToSend);
+            } else onlinePlayerName.sendMessage(messageToSend);
         }
     }
 
@@ -110,23 +106,24 @@ public class ChatProcessing {
         JsonArray array = BWJSONUtils.getJsonArrayFromFile(BlackwellPlugins.CHAT_CONFIG_FILE);
 
         JsonObject canal;
-        for (int i = 0; i < array.size(); i++) {
-            canal = array.get(i).getAsJsonObject();
+        if (array != null)
+            for (int i = 0; i < array.size(); i++) {
+                canal = array.get(i).getAsJsonObject();
 
-            if (canal.get("prefix").getAsString().equals(""))
-                canal.addProperty("prefix", "default");
+                if (canal.get("prefix").getAsString().isEmpty())
+                    canal.addProperty("prefix", "default");
 
-            ChatCanal chatCanal = new ChatCanal(canal);
-            BlackwellPlugins.logger.info("Le canal " + chatCanal.getName() + " a bien été chargé");
-            CHAT_CANAL_PREFIX.put(canal.get("prefix").getAsString(), chatCanal);
-            CHAT_CANAL_NAME.put(canal.get("name").getAsString(), chatCanal);
-            CANAL_LIST.add(chatCanal);
-        }
+                ChatCanal chatCanal = new ChatCanal(canal);
+                BlackwellPlugins.logger.info("Le canal " + chatCanal.getName() + " a bien été chargé");
+                CHAT_CANAL_PREFIX.put(canal.get("prefix").getAsString(), chatCanal);
+                CHAT_CANAL_NAME.put(canal.get("name").getAsString(), chatCanal);
+                CANAL_LIST.add(chatCanal);
+            }
     }
 
     public static void createChatConfigFile() {
         if (!BlackwellPlugins.CHAT_CONFIG_FILE.exists()) {
-            BWJSONUtils.createNewJson(BlackwellPlugins.CHAT_CONFIG_FILE);
+            BWJSONUtils.createNewJsonServerSide(BlackwellPlugins.CHAT_CONFIG_FILE);
 
             JsonArray array = new JsonArray();
 

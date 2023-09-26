@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.blackwell.plugins.BlackwellPlugins;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.*;
 import java.net.URL;
@@ -16,7 +18,8 @@ public class BWJSONUtils {
      *
      * @param file Objet File
      */
-    public static void createNewJson(File file) {
+    @SideOnly(Side.SERVER)
+    public static void createNewJsonServerSide(File file) {
 
         file.getParentFile().mkdirs();
 

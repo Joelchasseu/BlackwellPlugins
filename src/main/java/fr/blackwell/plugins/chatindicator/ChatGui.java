@@ -14,6 +14,5 @@ public class ChatGui extends GuiChat {
     public void onGuiClosed() {
         super.onGuiClosed();
         BWPacketHandler.INSTANCE.sendToServer(new MessChatClose());
-        System.out.println("GUI CLOSE");
     }
 }
