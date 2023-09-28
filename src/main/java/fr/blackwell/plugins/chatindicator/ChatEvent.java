@@ -8,9 +8,11 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,6 +31,16 @@ public class ChatEvent {
     public static void onPlayersChatOpened(GuiOpenEvent event) {
         if (event.getGui() != null && event.getGui() instanceof GuiChat)
             event.setGui(new ChatGui());
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void playerJoinWorld(EntityJoinWorldEvent event)
+    {
+        if (event.getEntity() instanceof EntityPlayer)
+        {
+            ChatEvent.CHATTING_PLAYER_LIST.clear();
+        }
     }
 
     @SideOnly(Side.CLIENT)

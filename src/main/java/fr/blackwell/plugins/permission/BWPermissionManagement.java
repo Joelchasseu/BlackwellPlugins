@@ -58,18 +58,17 @@ public class BWPermissionManagement {
             JsonArray permListFinal = new JsonArray();
             String[] permList = group.getPermListOriginal().toArray(new String[0]);
 
-            for (int j = 0; j < permList.length; j++)
-                permListFinal.add(permList[j]);
+            for (String s : permList) permListFinal.add(s);
             groupObject.add("permission", permListFinal);
 
             JsonArray childListFinal = new JsonArray();
             String[] childList = group.getChildList().toArray(new String[0]);
 
-            for (int j = 0; j < childList.length; j++)
-                childListFinal.add(childList[j]);
+            for (String s : childList) childListFinal.add(s);
             groupObject.add("child", childListFinal);
 
             groupObject.addProperty("default", group.isDefault());
+            groupObject.addProperty("staff", group.isStaff());
 
             rootArray.add(groupObject);
         }

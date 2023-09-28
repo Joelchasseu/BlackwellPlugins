@@ -5,6 +5,8 @@ import fr.blackwell.plugins.BlackwellPlugins;
 import fr.blackwell.plugins.permission.BWPermissionManagement;
 import fr.blackwell.plugins.permission.BWPlayerProfileManagement;
 import fr.blackwell.plugins.permission.Group;
+import fr.blackwell.plugins.tablist.BWPacketHandler;
+import fr.blackwell.plugins.tablist.MessagePlayerMapSyncConnection;
 import fr.blackwell.plugins.utils.BWCommandUtils;
 import fr.blackwell.plugins.utils.BWJSONUtils;
 import net.minecraft.command.CommandException;
@@ -54,8 +56,6 @@ public class CommandBWPermission implements ICommand {
             BWPermissionManagement.savePerm();
             BWPermissionManagement.loadPerm();
         }
-        if (args[0].equals("reload") && args.length == 1)
-            BWPermissionManagement.loadPerm();
 
         if ( args.length == 2 && args[0].equals("group") && args[1].equals("list")) {
             String[] keySet = BWPermissionManagement.getGroupMap().keySet().toArray(new String[0]);
@@ -78,11 +78,16 @@ public class CommandBWPermission implements ICommand {
                 String groupName = args[3];
                 if (BWPermissionManagement.isGroupName(groupName)) {
                     if (args[2].equals("add")) {
+
                         BWPlayerProfileManagement.addGroupToPlayer(username, groupName);
                         sender.sendMessage(new TextComponentString("Le joueur " + username + " a été ajouté au groupe " + groupName).setStyle(new Style().setColor(TextFormatting.GREEN)));
+                        BWPacketHandler.INSTANCE.sendToAll(new MessagePlayerMapSyncConnection());
+
                     } else if (args[2].equals("remove")) {
+
                         BWPlayerProfileManagement.removeGroupToPlayer(username, groupName);
                         sender.sendMessage(new TextComponentString("Le joueur " + username + " a été retiré du groupe " + groupName).setStyle(new Style().setColor(TextFormatting.GREEN)));
+                        BWPacketHandler.INSTANCE.sendToAll(new MessagePlayerMapSyncConnection());
 
                     } else sender.sendMessage(new TextComponentString("Commande invalide, essayez /bwp <username> " +
                             "group (add|remove) <groupName>").setStyle(new Style().setColor(TextFormatting.RED)));

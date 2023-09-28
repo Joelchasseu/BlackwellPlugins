@@ -105,12 +105,12 @@ public class BWPlayerProfileManagement {
 
     public static void loadPlayerData(String username) {
 
-        PLAYER_MAP.put(username, new BWPlayer(username, getPlayerProfileFromFile(username)));
+        PLAYER_MAP.put(username, new BWPlayer(username, getPlayerProfileFromFile(username), false));
     }
 
     @SideOnly(Side.CLIENT)
     public static void loadPlayerDataToClient(JsonObject profile, String username) {
-        PLAYER_MAP.put(username, new BWPlayer(username, profile));
+        PLAYER_MAP.put(username, new BWPlayer(username, profile, true));
     }
 
 

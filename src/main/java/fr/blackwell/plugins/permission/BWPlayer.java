@@ -22,7 +22,7 @@ public class BWPlayer {
     private String role;
     private String type;
 
-    public BWPlayer(String username, JsonObject profile) {
+    public BWPlayer(String username, JsonObject profile, boolean onClient) {
 
         this.group = profile.get("group").getAsJsonArray();
         this.profile = profile;
@@ -33,9 +33,13 @@ public class BWPlayer {
         this.age = profile.get("age").getAsInt();
         this.role = profile.get("role").getAsString();
         this.type = profile.get("type").getAsString();
-        if (profile.has("staff"))
-            this.isStaff = profile.get("staff").getAsBoolean();
-        this.initializePermList();
+        if (onClient) {
+            if (profile.has("staff"))
+                this.isStaff = profile.get("staff").getAsBoolean();
+        } else {
+            this.initializePermList();
+            profile.addProperty("staff", this.isStaff);
+        }
     }
 
     public JsonArray getGroup() {

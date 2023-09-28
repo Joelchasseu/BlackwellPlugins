@@ -1,12 +1,10 @@
 package fr.blackwell.plugins.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import fr.blackwell.plugins.BlackwellPlugins;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 
 import java.io.*;
 import java.net.URL;
@@ -40,12 +38,17 @@ public class BWJSONUtils {
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             //We can write any JSONArray or JSONObject instance to the file
-            fileWriter.write(rootJsonObject.toString());
+            fileWriter.write(prettyPrintJsonUsingDefaultPrettyPrinter(rootJsonObject));
             fileWriter.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String prettyPrintJsonUsingDefaultPrettyPrinter(JsonElement uglyJsonElement) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(uglyJsonElement);
     }
 
     /**

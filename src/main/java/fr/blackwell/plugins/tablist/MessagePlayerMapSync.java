@@ -33,8 +33,8 @@ public class MessagePlayerMapSync implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        JsonObject index = BWJSONUtils.getJsonRootObject(BlackwellPlugins.PLAYERS_FILE);
-        JsonObject profile = index.get(this.username).getAsJsonObject();
+
+        JsonObject profile = BWPlayerProfileManagement.PLAYER_MAP.get(this.username).getProfile();
         ByteBufUtils.writeUTF8String(buf, profile.toString());
     }
 

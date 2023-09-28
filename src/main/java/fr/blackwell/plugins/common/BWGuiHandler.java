@@ -24,8 +24,6 @@ public class BWGuiHandler implements IGuiHandler {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 
-
-
         if (ID == TAB_PLAYER_LIST)
             return new TabGui (player);
         return null;

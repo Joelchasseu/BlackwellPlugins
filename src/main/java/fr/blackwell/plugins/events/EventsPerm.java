@@ -6,8 +6,6 @@ import fr.blackwell.plugins.permission.BWPlayerProfileManagement;
 import fr.blackwell.plugins.tablist.*;
 import fr.blackwell.plugins.utils.BWJSONUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,12 +13,10 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.server.FMLServerHandler;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 @Mod.EventBusSubscriber
 public class EventsPerm {
@@ -36,33 +32,32 @@ public class EventsPerm {
 
         boolean hasProfile = BWJSONUtils.getJsonRootObject(BlackwellPlugins.PLAYERS_FILE).has(username);
 
-        if (event.player.getName().startsWith("Player") && hasProfile) {
+        if (hasProfile) {
 
-            BlackwellPlugins.logger.info("Le profil du joueur " + username + " a bien été crée");
             BWPlayerProfileManagement.loadPlayerData(username);
+            BlackwellPlugins.logger.info("Le profil du joueur " + username + " a bien été chargé");
 
         } else {
             JsonObject profile = BWJSONUtils.getPlayerBlackWellDataFromWebsite(username);
             profile.addProperty("uuid", event.player.getGameProfile().getId().toString());
-            profile.addProperty("role", "Elève");
-            profile.addProperty("type", "Feu");
+            profile.addProperty("role", "Non Assigné");
+            profile.addProperty("type", "Non Assigné");
+            profile.addProperty("staff", false);
             if (profile.has("firstname") && !profile.get("firstname").getAsString().equals("")) {
                 BWPlayerProfileManagement.writePlayerBWProfile(profile, username);
                 BlackwellPlugins.logger.info("Le profil du joueur " + username + " a bien été crée");
                 BWPlayerProfileManagement.loadPlayerData(username);
             } else {
-                /*if (event.player.getServer().isSinglePlayer())
-                    FMLServerHandler.instance().getServer().commandManager.executeCommand(event.player.getServer(), "/kick " + event.player.getName() + " Veuillez vous créer un profil via le customiseur sur le site de Blackwell University (https://blackwell-university.fr/index.html#who_are_we)");
-                FMLServerHandler.instance().getServer().commandManager.executeCommand(event.player.getServer(), "/kick " + event.player.getName() + " Veuillez vous créer un profil via le customiseur sur le site de Blackwell University (https://blackwell-university.fr/index.html#who_are_we)");
-                 */
+
                 profile.addProperty("model", "default");
-                profile.addProperty("firstname", "Sanglier");
-                profile.addProperty("lastname", "De Cornouailles");
+                profile.addProperty("firstname", "Visiteur");
+                profile.addProperty("lastname", "Sans Profil");
                 profile.addProperty("age", "21");
                 profile.addProperty("height", "186");
-                profile.addProperty("twitter", "Oizo");
-                profile.addProperty("instagram", "Foto");
-                profile.addProperty("role", "Elève");
+                profile.addProperty("twitter", "");
+                profile.addProperty("instagram", "");
+                profile.addProperty("role", "Non Assigné");
+                profile.addProperty("staff", false);
 
                 BWPlayerProfileManagement.writePlayerBWProfile(profile, username);
                 BlackwellPlugins.logger.info("Le profil du joueur " + username + " a bien été crée");
@@ -130,11 +125,5 @@ public class EventsPerm {
         }
 
         BWPacketHandler.INSTANCE.sendToAll(new MessagePlayerMapSyncDeco(event.player.getName()));
-    }
-
-    @SubscribeEvent
-    public static void ClosingTargetInv(PlayerContainerEvent.Close event) {
-
-
     }
 }

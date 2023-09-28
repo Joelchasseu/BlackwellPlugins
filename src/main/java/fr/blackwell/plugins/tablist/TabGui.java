@@ -5,6 +5,7 @@ import fr.blackwell.plugins.BlackwellPlugins;
 import fr.blackwell.plugins.permission.BWPlayer;
 import fr.blackwell.plugins.permission.BWPlayerProfileManagement;
 import fr.blackwell.plugins.utils.BWGuiUtils;
+import fr.blackwell.plugins.utils.BWUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -58,8 +59,14 @@ public class TabGui extends GuiScreen {
 
         String username = player.getName();
         this.entityPlayer = player;
-        this.player = PLAYER_MAP.get(username);
-
+        System.out.println("TabGUI/Username : " + username);
+        System.out.println("TabGUI/Entries : " + PLAYER_MAP.toString());
+        if (PLAYER_MAP.containsKey(username))
+            this.player = PLAYER_MAP.get(username);
+        else {
+            this.entityPlayer.closeScreen();
+            this.player = null;
+        }
         allowUserInput = true;
 
         List<String> roleList = new ArrayList<>();
@@ -68,7 +75,7 @@ public class TabGui extends GuiScreen {
         //sort players in categories
         for (int i = 0; i < PLAYER_MAP.size(); i++) {
             BWPlayer target = PLAYER_MAP.get(onlinePlayers[i]);
-            BWGuiUtils.bindOnlineImageAsTexture(username, "https://custom.blackwell-university.fr/skins/" + username + "/avatar.png", true);
+            BWGuiUtils.bindOnlineImageAsTexture(username, "https://custom.blackwell-university.fr/skins/" + username + "/avatar.png");
             String role = target.getRole();
 
             if (!roleList.contains(role))
@@ -88,8 +95,6 @@ public class TabGui extends GuiScreen {
             float factor = (float) listPlayerHeight / (float) playerListContentY;
             heightScrollBar = Math.round((float) listPlayerHeight * factor);
         }
-        System.out.println(listPlayerHeight + " : " + playerListContentY);
-
     }
 
     @Override
@@ -176,7 +181,7 @@ public class TabGui extends GuiScreen {
         String stringRoleConnected;
         if (onlineMembers <= 1)
             stringRoleConnected = onlineMembers + " connecté";
-        else stringRoleConnected = onlineMembers + "s connectés";
+        else stringRoleConnected = onlineMembers + " connectés";
 
         BWGuiUtils.drawString(stringRoleConnected, x + 113 - Math.round(fontRenderer.getStringWidth(stringRoleConnected) * scaleNbrOnline), y + 8, scaleNbrOnline, 0xFFFFFFFF);
 
@@ -206,40 +211,39 @@ public class TabGui extends GuiScreen {
         }
 
         float scale = 0.7f;
-
         GL11.glPushMatrix();
         Gui.drawRect(x, y, x + xSize, y + ySize, 0xCC424242);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, FONT_ID);
         GL11.glTranslatef(1.0F, 1.0F, 3.0F);
         List<String> nameTrimmed = fontRenderer.listFormattedStringToWidth(name, 100);
-        if (nameTrimmed.size() == 1) {
-            GL11.glScalef(scale, scale, 1.0F);
-            fontRenderer.drawStringWithShadow(name, (int) ((x + 15) * (1 / scale)), (int) ((y + 4) * (1 / scale)), 0xFFFFFFFF);
-        } else if (nameTrimmed.size() == 2) {
+        if (nameTrimmed.size() == 1)
+            BWGuiUtils.drawString(name, x + 15, y + 4, scale, 0xFFFFFFFF);
+        else if (nameTrimmed.size() == 2) {
             scale = 0.6f;
-            GL11.glScalef(scale, scale, 1.0F);
             for (int i = 0; i < nameTrimmed.size(); i++)
-                fontRenderer.drawStringWithShadow(nameTrimmed.get(i), (int) ((x + 15) * (1 / scale)), (int) ((y + 1 + 6 * i) * (1 / scale)), 0xFFFFFFFF);
+                BWGuiUtils.drawString(nameTrimmed.get(i), x + 15, y + 1 + 6 * i, scale, 0xFFFFFFFF);
         } else {
             scale = 0.5f;
-            GL11.glScalef(scale, scale, 1.0F);
+
             nameTrimmed = fontRenderer.listFormattedStringToWidth(name, 140);
-            for (int i = 0; i < nameTrimmed.size(); i++)
-                fontRenderer.drawStringWithShadow(nameTrimmed.get(i), (int) ((x + 15) * (1 / scale)), (int) ((y + 2 + 5 * i) * (1 / scale)), 0xFFFFFFFF);
+            for (int i = 0; i < 2; i++)
+                BWGuiUtils.drawString(nameTrimmed.get(i), x + 15, y + 2 + 5 * i, scale, 0xFFFFFFFF);
         }
 
         GL11.glPopMatrix();
 
+        if (AVATAR_MAP.containsKey(username)) {
+            float scaleAvatar = 0.05f;
+            GL11.glPushMatrix();
 
-        float scaleAvatar = 0.05f;
-        GL11.glPushMatrix();
-        if (AVATAR_MAP.containsKey(username))
+            GL11.glTranslatef(x + 1, y + 1, 1F);
+            GL11.glScalef(scaleAvatar, scaleAvatar, 1.0F);
+
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, AVATAR_MAP.get(username).getGlTextureId());
-        GL11.glTranslatef(x + 1, y + 1, 1F);
-        GL11.glScalef(scaleAvatar, scaleAvatar, 1.0F);
-        this.drawTexturedModalRect(0, 0, 0, 0, 256, 256);
-        GL11.glPopMatrix();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+            this.drawTexturedModalRect(0, 0, 0, 0, 256, 256);
+            GL11.glPopMatrix();
+        }
+        BWGuiUtils.bindDefaultFont();
 
     }
 
@@ -304,7 +308,6 @@ public class TabGui extends GuiScreen {
                         drawSlot(target, onlinePlayers[j], x + 10, y + lines * 17 + listOffsetY);
                     lines++;
                 }
-
             }
         }
     }
@@ -322,8 +325,7 @@ public class TabGui extends GuiScreen {
 
         BWGuiUtils.drawCenteredString("Derry Dalmelington", x + width / 2, y + 10, scaleTitle, 0xFFFFFFFF);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-        String time = formatter.format(new Date());
+        String time = BWUtils.formatTime((int) this.mc.world.getWorldTime());
         JsonObject timeData = TimeManagement.timeData;
         String mois = timeData.get("mois").getAsString();
         String annee = timeData.get("annee").getAsString();
@@ -366,7 +368,9 @@ public class TabGui extends GuiScreen {
         float scale = 80f;
         float rotationPitch = ent.rotationPitch;
         float rotationYaw = ent.rotationYaw;
+        float rotationHeadYaw = ent.rotationYawHead;
         ent.rotationPitch = 5.0f;
+        ent.rotationYawHead = 150f;
         ent.setRenderYawOffset(150f);
         GL11.glPushMatrix();
         GlStateManager.enableColorMaterial();
@@ -382,6 +386,7 @@ public class TabGui extends GuiScreen {
         rendermanager.renderEntity(ent, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
         rendermanager.setRenderShadow(false);
         ent.rotationPitch = rotationPitch;
+        ent.rotationYawHead = rotationHeadYaw;
         ent.setRenderYawOffset(rotationYaw);
         GlStateManager.popMatrix();
 
