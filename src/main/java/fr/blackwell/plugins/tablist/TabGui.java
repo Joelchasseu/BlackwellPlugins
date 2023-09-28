@@ -44,7 +44,6 @@ public class TabGui extends GuiScreen {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(BlackwellPlugins.MODID, "textures/gui/tablist/background.png");
 
     public static HashMap<String, DynamicTexture> AVATAR_MAP = new HashMap<>();
-    public static HashMap<String, DynamicTexture> SKIN_MAP = new HashMap<>();
     @SuppressWarnings(value = "unchecked")
     private final HashMap<String, BWPlayer> PLAYER_MAP = (HashMap<String, BWPlayer>) BWPlayerProfileManagement.PLAYER_MAP.clone();
     private final List<String> ROLE_LIST;
@@ -59,8 +58,6 @@ public class TabGui extends GuiScreen {
 
         String username = player.getName();
         this.entityPlayer = player;
-        System.out.println("TabGUI/Username : " + username);
-        System.out.println("TabGUI/Entries : " + PLAYER_MAP.toString());
         if (PLAYER_MAP.containsKey(username))
             this.player = PLAYER_MAP.get(username);
         else {

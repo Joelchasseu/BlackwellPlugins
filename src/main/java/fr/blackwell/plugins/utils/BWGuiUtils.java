@@ -63,8 +63,4 @@ public class BWGuiUtils {
     public static boolean isMouseOverArea(int mouseX, int mouseY, int posX, int posY, int sizeX, int sizeY) {
         return (mouseX >= posX && mouseX < posX + sizeX && mouseY >= posY && mouseY < posY + sizeY);
     }
-
-    public static void drawRectWithOnlinePic(int x, int y, int width, int height, String urlString) throws IOException {
-
-    }
 }

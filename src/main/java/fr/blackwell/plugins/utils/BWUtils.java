@@ -7,7 +7,7 @@ public class BWUtils {
             return false;
         }
         try {
-            double d = Double.parseDouble(strNum);
+           Double.parseDouble(strNum);
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -16,7 +16,7 @@ public class BWUtils {
 
     public static String formatTime(int input) {
         // Transform ticks in input to hours and minutes
-        int minutes = (int) (Math.abs((input + 6000) % 24000) % 1000) * 6 / 100;
+        int minutes = (Math.abs((input + 6000) % 24000) % 1000) * 6 / 100;
         int hours =   (int) ((float)Math.abs((input+ 6000) % 24000) / 1000F);
 
         String hourString = String.valueOf(hours);

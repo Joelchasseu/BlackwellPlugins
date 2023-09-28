@@ -4,7 +4,6 @@ import com.google.gson.*;
 import fr.blackwell.plugins.BlackwellPlugins;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.core.jackson.Log4jJsonObjectMapper;
 
 import java.io.*;
 import java.net.URL;
@@ -16,6 +15,7 @@ public class BWJSONUtils {
      *
      * @param file Objet File
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SideOnly(Side.SERVER)
     public static void createNewJsonServerSide(File file) {
 
@@ -34,6 +34,7 @@ public class BWJSONUtils {
         }
     }
 
+    @SuppressWarnings("all")
     public static void writeJsonRootObject(File file, JsonObject rootJsonObject) {
 
         try (FileWriter fileWriter = new FileWriter(file)) {
@@ -49,36 +50,6 @@ public class BWJSONUtils {
     public static String prettyPrintJsonUsingDefaultPrettyPrinter(JsonElement uglyJsonElement) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(uglyJsonElement);
-    }
-
-    /**
-     * Méthode permettant de récupérer la table à la racine d'un fichier JSON
-     *
-     * @param name     Nom du fichier sans l'extension
-     * @param location Chemin vers le fichier en partant de la racine du projet
-     * @return La table à la racine d'un fichier JSON
-     */
-    public static JsonArray getJsonArrayFromFile(String name, String location) {
-
-        JsonParser parser = new JsonParser();
-        File file = new File(location + "/" + name + ".json");
-
-        if (file.exists()) {
-
-            try (FileReader reader = new FileReader(file)) {
-
-                JsonArray jsonArray = (JsonArray) parser.parse(reader);
-
-                return jsonArray;
-
-            } catch (IOException e) {
-                BlackwellPlugins.logger.warn("Impossible de lire le fichier : " + file.getName());
-                throw new RuntimeException(e);
-            }
-        } else {
-            BlackwellPlugins.logger.warn("Fichier " + file.getName() + " introuvable");
-            return null;
-        }
     }
 
     /**
@@ -134,6 +105,7 @@ public class BWJSONUtils {
         } else return null;
     }
 
+    @SuppressWarnings("all")
     public static JsonObject getPlayerBlackWellDataFromWebsite(String username) {
         String urlContents = "";
 
@@ -147,7 +119,7 @@ public class BWJSONUtils {
             }
 
             in.close();
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
             e.printStackTrace();
         }
